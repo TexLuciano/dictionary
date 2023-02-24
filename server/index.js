@@ -19,7 +19,7 @@ app.get('/', async (req, res)=>{
 mongoose.set("strictQuery", true);
 mongoose
   .connect(
-    'mongodb+srv://tex:tex@cluster0.4isr0ao.mongodb.net/?retryWrites=true&w=majority',
+    'mongodb+srv://@cluster0.4isr0ao.mongodb.net/?retryWrites=true&w=majority',
   )
   .then(() => console.log('conectado'))
   .catch(() => console.log('error'));
