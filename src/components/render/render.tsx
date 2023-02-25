@@ -2,33 +2,32 @@ import React, { useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import * as C from './style';
 import { Modal } from '../modal/modal';
-
+import { FaEdit } from 'react-icons/fa';
+import { AiFillDelete } from 'react-icons/ai';
 interface Props {
   render: number;
   deletar: (id: string) => void;
   modal: boolean;
   setModal: (value: boolean) => void;
-  req:()=> void
+  req: () => void;
 }
 
-export const Render = ({ render, deletar,req }: Props) => {
+export const Render = ({ render, deletar, req }: Props) => {
   const [posts, setPosts] = useState<AxiosResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [editModalOpen, setModalOpen] = useState(false);
   const [itemIdToEdit, setItemIdToEdit] = useState('');
   const [name, setName] = useState('');
 
-  function openEditModal(itemId: string, name:string) {
+  function openEditModal(itemId: string, name: string) {
     setItemIdToEdit(itemId);
-    setName(name)
-    if(editModalOpen === false){
-      setModalOpen(true)
-    }else{
-      setModalOpen(false)
+    setName(name);
+    if (editModalOpen === false) {
+      setModalOpen(true);
+    } else {
+      setModalOpen(false);
     }
-
   }
-
 
   const getPosts = async () => {
     setTimeout(async () => {
@@ -46,8 +45,6 @@ export const Render = ({ render, deletar,req }: Props) => {
     getPosts();
   }, [render]);
 
- 
-
   type Word = {
     dificult: string;
     name: string;
@@ -56,22 +53,32 @@ export const Render = ({ render, deletar,req }: Props) => {
     _id: string;
   };
 
-
-
   return (
     <>
-    <Modal itemId={itemIdToEdit} closeModal={editModalOpen} setModal={setModalOpen} name={name} req={req}/>
+      <Modal
+        itemId={itemIdToEdit}
+        closeModal={editModalOpen}
+        setModal={setModalOpen}
+        name={name}
+        req={req}
+      />
       <C.Container>
         {posts &&
           posts?.data.map((item: Word) => (
-            <C.Item key={item._id}>
-              <p>{item.name} -</p>
-              <p>{item.translate}</p>
-              <button onClick={() => deletar(item._id)}>x</button>
-              <button onClick={() => openEditModal(item._id, item.name)}>edit</button>
-            </C.Item>
+            <C.ItemGroup key={item._id}>
+              <C.ContainerItem>
+                <C.Item color={item.dificult}>{item.name}</C.Item>
+                <C.Item color={item.dificult}>{item.translate}</C.Item>
+              </C.ContainerItem>
+              <C.Btn onClick={() => deletar(item._id)}>
+                <AiFillDelete />
+              </C.Btn>
+              <C.Btn onClick={() => openEditModal(item._id, item.name)}>
+                <FaEdit />
+              </C.Btn>
+            </C.ItemGroup>
           ))}
-        {!loading && <p>Caregando</p>}
+        {!loading && <C.Loading></C.Loading>}
       </C.Container>
     </>
   );

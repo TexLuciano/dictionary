@@ -1,10 +1,8 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { WordForm } from './form/form';
-import { Modal } from './modal/modal';
 import { Render } from './render/render';
-import * as C from './style';
+
 
 const Init = () => {
   const [word, setWord] = useState('');
@@ -13,14 +11,11 @@ const Init = () => {
   const [render, setRender] = useState(0);
   const [modal, setModal] = useState(false);
 
- 
-
   console.log(modal);
 
   function req() {
     setRender(render + 1);
   }
- 
 
   function env(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -41,15 +36,12 @@ const Init = () => {
     }
   }
 
-  function deleteWord( id: string) {
-    
+  function deleteWord(id: string) {
     axios
       .delete(`http://localhost:3000/create/${id}`)
       .then((res) => console.log(res.status));
     req();
   }
-
-
 
   return (
     <div>
@@ -64,9 +56,13 @@ const Init = () => {
         display={true}
       />
 
-      
-      
-      <Render render={render} deletar={deleteWord} modal={modal} setModal={setModal} req={req}/>
+      <Render
+        render={render}
+        deletar={deleteWord}
+        modal={modal}
+        setModal={setModal}
+        req={req}
+      />
     </div>
   );
 };
