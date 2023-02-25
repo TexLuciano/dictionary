@@ -1,59 +1,74 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-
-
+import axios from 'axios';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { WordForm } from './form/form';
+import { Modal } from './modal/modal';
+import { Render } from './render/render';
+import * as C from './style';
 
 const Init = () => {
-const [word, setWord] = useState('')
-const [tranlate, setTranslate] = useState('')
-const [select, setSelec] = useState('')
+  const [word, setWord] = useState('');
+  const [tranlate, setTranslate] = useState('');
+  const [select, setSelec] = useState('');
+  const [render, setRender] = useState(0);
+  const [modal, setModal] = useState(false);
 
-type ar ={
-  word:string,
-  tranlate:string,
-  select:string,
-}
+ 
 
-const palavras:ar[]= [
-{
-  word:'save',
-  tranlate:'salvar-guardar',
-  select:'green',
-}
+  console.log(modal);
 
-]
-
-
-function env (e:React.FormEvent<HTMLFormElement>){
-  e.preventDefault()
-  let temp = {
-    word:word,
-    tranlate:tranlate,
-    select:select,
+  function req() {
+    setRender(render + 1);
   }
-palavras.push(...palavras, temp)
-  
-}
+ 
 
-console.log(palavras)
+  function env(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    let temp = {
+      name: word,
+      translate: tranlate,
+      dificult: select,
+    };
+    if (word != '' || tranlate != '' || select != '') {
+      axios
+        .post('http://localhost:3000/create', temp)
+        .then((res) => console.log(res.data));
+      req();
+
+      setWord('');
+      setSelec('');
+      setTranslate('');
+    }
+  }
+
+  function deleteWord( id: string) {
+    
+    axios
+      .delete(`http://localhost:3000/create/${id}`)
+      .then((res) => console.log(res.status));
+    req();
+  }
+
+
+
   return (
     <div>
-      <form action="" onSubmit={env}>
-        <label htmlFor="">word</label>
-        <input type="text" value={word} onChange={({target})=>{ setWord(target.value)}}/>
-        <label htmlFor="">translate</label>
-        <input type="text" value={tranlate} onChange={({target})=>{ setTranslate(target.value)}}/>
-        <select value={select} onChange={({target})=>{ setSelec(target.value)}}>
-          <option value="green">easy</option>
-          <option value="yellow">midle</option>
-          <option value="red">hard</option>
-        </select>
-        <button>save</button>
+      <WordForm
+        onSubmit={env}
+        word={word}
+        tranlate={tranlate}
+        select={select}
+        setWord={setWord}
+        setSelec={setSelec}
+        setTranslate={setTranslate}
+        display={true}
+      />
 
-      </form>
       
+      
+      <Render render={render} deletar={deleteWord} modal={modal} setModal={setModal} req={req}/>
     </div>
-  )
-}
+  );
+};
 
-export default Init
+export default Init;
