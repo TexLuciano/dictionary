@@ -1,8 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { WordForm } from './form/form';
-import { Render } from './render/render';
-
+import { WordForm } from '../form/form';
+import { Render } from '../render/render';
 
 const Init = () => {
   const [word, setWord] = useState('');
@@ -11,7 +10,7 @@ const Init = () => {
   const [render, setRender] = useState(0);
   const [modal, setModal] = useState(false);
 
-  console.log(modal);
+ 
 
   function req() {
     setRender(render + 1);

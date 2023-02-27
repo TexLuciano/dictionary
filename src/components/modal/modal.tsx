@@ -1,54 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import axios from 'axios';
 import * as C from './style';
-
-interface EditableItem {
-  name: string;
-  translate: string;
-  difficulty: string;
-}
-
 interface Props {
   itemId: string;
   closeModal: boolean;
   name: string;
   req: () => void;
   setModal: (value: boolean) => void;
+  translate:string
 }
 
-export const Modal = ({ itemId, closeModal, name, req, setModal }: Props) => {
-  const [editableItem, setEditableItem] = useState<EditableItem>({
-    name: '',
-    translate: '',
-    difficulty: '',
-  });
+export const Modal = ({ itemId, closeModal, name, req, setModal , translate}: Props) => {
+  const [editW, setEditW] = useState('');
+  const [editT, setEditT] = useState('');
+  const [editS, setEditS] = useState('');
 
+
+
+  useEffect(() => {
+    setEditW(name);
+    setEditT(translate);
+  }, [name, translate]);
+
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const editedItem = {
+      name: editW,
+      translate: editT,
+      dificult: editS,
+    };
 
     try {
-      const { name, translate, difficulty } = editableItem;
-
-      if (name || translate || difficulty) {
+      if (editS != '' || editT !== '' || editW != '') {
         const response = await axios.put(
           `http://localhost:3000/create/${itemId}`,
-          { name, translate, difficulty }
+          editedItem,
         );
         console.log(response.data);
       }
     } catch (err) {
       console.log(err);
     }
-
     req();
-    setEditableItem({ name: '', translate: '', difficulty: '' });
+    setEditW('');
+    setEditT('');
+    setEditS('');
     setModal(false);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = event.target;
-
-    setEditableItem(prevState => ({ ...prevState, [name]: value }));
   };
 
   return (
@@ -58,45 +56,41 @@ export const Modal = ({ itemId, closeModal, name, req, setModal }: Props) => {
         <h2>Edit - {name}</h2>
         <C.FormdivCont>
           <C.Formdiv>
-            <label htmlFor="name">word</label>
+            <label htmlFor="">word</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={editableItem.name}
-              onChange={handleInputChange}
+              value={editW}
+              onChange={(e) => setEditW(e.target.value)}
             />
           </C.Formdiv>
           <C.Formdiv>
-            <label htmlFor="translate">translation</label>
+            <label htmlFor="">translation</label>
             <input
               type="text"
-              id="translate"
-              name="translate"
-              value={editableItem.translate}
-              onChange={handleInputChange}
+              value={editT}
+              onChange={(e) => setEditT(e.target.value)}
             />
           </C.Formdiv>
-          <C.Formdiv>
-            <label htmlFor="difficulty">Difficulty</label>
-            <select
-              id="difficulty"
-              name="difficulty"
-              value={editableItem.difficulty}
-              onChange={handleInputChange}
-            >
-              <option disabled value="">Select</option>
-              <option value="green" style={{ background: 'green' }}>Easy</option>
-              <option value="yellow" style={{ background: 'yellow' }}>Medium</option>
-              <option value="red" style={{ background: 'red' }}>Hard</option>
-            </select>
-          </C.Formdiv>
+
+          <select value={editS} onChange={(e) => setEditS(e.target.value)}>
+            <option disabled value="">
+              Select
+            </option>
+            <option value="green" style={{ background: 'green' }}>
+              easy
+            </option>
+            <option value="yellow" style={{ background: 'yellow' }}>
+              medium
+            </option>
+            <option value="red" style={{ background: 'red' }}>
+              hard
+            </option>
+          </select>
         </C.FormdivCont>
-        <C.Btn type="submit" disabled={!editableItem.name && !editableItem.translate && !editableItem.difficulty}>
+        <C.Btn type="submit" disabled={editS || editT || editW ? false : true}>
           Salvar
         </C.Btn>
       </C.Container>
     </C.ContainerGrid>
   );
 };
-

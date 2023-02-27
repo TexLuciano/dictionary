@@ -18,16 +18,21 @@ export const Render = ({ render, deletar, req }: Props) => {
   const [editModalOpen, setModalOpen] = useState(false);
   const [itemIdToEdit, setItemIdToEdit] = useState('');
   const [name, setName] = useState('');
+  const [translate, setTranslate] = useState('');
 
-  function openEditModal(itemId: string, name: string) {
+  function openEditModal(itemId: string, name: string, traslate:string) {
     setItemIdToEdit(itemId);
     setName(name);
+    setTranslate(traslate)
+    
     if (editModalOpen === false) {
       setModalOpen(true);
     } else {
       setModalOpen(false);
     }
   }
+
+console.log(name,translate);
 
   const getPosts = async () => {
     setTimeout(async () => {
@@ -61,6 +66,7 @@ export const Render = ({ render, deletar, req }: Props) => {
         setModal={setModalOpen}
         name={name}
         req={req}
+        translate={translate}
       />
       <C.Container>
         {posts &&
@@ -73,7 +79,7 @@ export const Render = ({ render, deletar, req }: Props) => {
               <C.Btn onClick={() => deletar(item._id)}>
                 <AiFillDelete />
               </C.Btn>
-              <C.Btn onClick={() => openEditModal(item._id, item.name)}>
+              <C.Btn onClick={() => openEditModal(item._id, item.name, item.translate)}>
                 <FaEdit />
               </C.Btn>
             </C.ItemGroup>
